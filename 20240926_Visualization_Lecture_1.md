@@ -5,6 +5,12 @@ Kaleb J. Frierson
 
 - [Lecture Notes](#lecture-notes)
 - [Coding](#coding)
+  - [libraries and setup](#libraries-and-setup)
+  - [intro to ggplot](#intro-to-ggplot)
+  - [Scatter plots](#scatter-plots)
+  - [histograms](#histograms)
+  - [box plots](#box-plots)
+  - [saving and embedding plots](#saving-and-embedding-plots)
 
 # Lecture Notes
 
@@ -34,6 +40,8 @@ A graph is built by combining these components. Components are
 consistent across graph types!
 
 # Coding
+
+## libraries and setup
 
 ``` r
 weather_df = 
@@ -70,6 +78,8 @@ weather_df =
     ## date created (size, mb): 2024-09-26 10:19:07.74187 (1.036)
 
     ## file min/max dates: 1999-09-01 / 2024-09-30
+
+## intro to ggplot
 
 ``` r
 weather_df
@@ -165,6 +175,8 @@ weather_df |>
     ## (`geom_point()`).
 
 ![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+## Scatter plots
 
 Let’s make a somewhat more interesting scatterplot:
 
@@ -268,3 +280,193 @@ Colors bring up a great question. When to quote and when not to quote?
 Generally speaking, if something is a variable name, it doesn’t need to
 be in quotes. If it is NOT a variable name it often needs quotes. Unless
 of course it is a function.
+
+## histograms
+
+color defines the outside of the histogram bar, fill will fill the bar.
+It is still difficult to compare these things. You can say in histogram
+position = dodge and it will put bars next to eachother instead of on
+top of eachother.
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, color = name)) + 
+  geom_histogram(position="dodge")
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+Still difficult to see, how to fix? Useing facet?
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, fill=name)) + 
+  geom_histogram()+
+  facet_grid(.~name)
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_bin()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+This is kind of clunky. Maybe not the best way to compare the data.
+Great for seeing distributions.
+
+Density plot? Get a more “smooth” histogram. Helps make comparisons and
+see the distributions.
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, fill = name))+
+  geom_density(alpha = 0.3)
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+
+## box plots
+
+Color not appropriate here for identifying but might help for
+consistency if you decide to report these graphs or you just like pretty
+colors:
+
+``` r
+weather_df |> 
+  ggplot(aes(x=name, y=tmin, fill = name)) + 
+  geom_boxplot()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-15-1.png)<!-- -->
+\## violin plots
+
+``` r
+weather_df |> 
+  ggplot(aes(x=name, y=tmin, fill = name)) + 
+  geom_violin()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
+\## ridge plots
+
+didn’t exist and then in 2017 they went crazy
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, y= name)) + 
+  geom_density_ridges()
+```
+
+    ## Picking joint bandwidth of 1.41
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_density_ridges()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+\## Learning assessment
+
+``` r
+ggplot(weather_df, aes(x = prcp)) + 
+  geom_density(aes(fill = name), alpha = .5) 
+```
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_density()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+``` r
+ggplot(weather_df, aes(x = prcp, y = name)) + 
+  geom_density_ridges(scale = .85)
+```
+
+    ## Picking joint bandwidth of 9.22
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_density_ridges()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+
+``` r
+ggplot(weather_df, aes(y = prcp, x = name)) + 
+  geom_boxplot() 
+```
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_boxplot()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+``` r
+weather_df |> 
+  ggplot(aes(x=name, y=prcp, fill = name)) + 
+  geom_violin()
+```
+
+    ## Warning: Removed 15 rows containing non-finite outside the scale range
+    ## (`stat_ydensity()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+Lots of days there is no rain, lets filter to make graphics better:
+
+``` r
+weather_df |> 
+  filter(prcp > 0) |> 
+  ggplot(aes(x = prcp, y = name)) + 
+  geom_density_ridges(scale = .85)
+```
+
+    ## Picking joint bandwidth of 20.6
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
+
+``` r
+weather_df |> 
+  filter(prcp > 10) |> 
+  ggplot(aes(x = prcp, y = name)) + 
+  geom_density_ridges(scale = .85)
+```
+
+    ## Picking joint bandwidth of 31.8
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+What if you have one outlier that is really stretching you axis? Take it
+out if you want!
+
+## saving and embedding plots
+
+``` r
+ggp_weather= 
+  weather_df |> 
+  ggplot(aes(x= date, y = tmax, color = name)) + 
+  geom_point() 
+
+ggsave("plots/ggp_weather.pdf", ggp_weather, width = 8, height = 6)
+```
+
+``` r
+  weather_df |> 
+  ggplot(aes(x= date, y = tmax, color = name)) + 
+  geom_point() 
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/embed-1.png)<!-- -->
