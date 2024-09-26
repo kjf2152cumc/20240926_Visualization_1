@@ -9,22 +9,17 @@ output:
 
 # Lecture Notes
 
-Exploratory data analysis can mean a lot of things. You're getting to know your data! Everything you have done after importing and tidying data up until you do official testing/analyses. 
+Exploratory data analysis can mean a lot of things. You're getting to know your data! Everything you have done after importing and tidying data up until you do official testing/analyses.
 
-Looking at data is critical. You will make dozens of graphics for each dataset. You will be the only person who views a lot of them. A small subset are for others, but visualizing your data is crucial throughout your work. 
+Looking at data is critical. You will make dozens of graphics for each dataset. You will be the only person who views a lot of them. A small subset are for others, but visualizing your data is crucial throughout your work.
 
-ggplot makes good graphics with relative ease (compared to base R graphics). 
-  gg = grammar of graphics. Conceptual framework for how you want to construct
-  plots. Requires some learning about what that grammar is. But once you know 
-  it, the infrastructure is the same. 
+ggplot makes good graphics with relative ease (compared to base R graphics). gg = grammar of graphics. Conceptual framework for how you want to construct plots. Requires some learning about what that grammar is. But once you know it, the infrastructure is the same.
 
-Learning ggplot: lots of online materials. Google is helpful! David Robinson: "Just discovered that I've visited this ggplot2 question 29 times in the last two years." 
+Learning ggplot: lots of online materials. Google is helpful! David Robinson: "Just discovered that I've visited this ggplot2 question 29 times in the last two years."
 
-Basic graph components: 
-data, aesthetic mappings, geoms 
+Basic graph components: data, aesthetic mappings, geoms
 
-Advanced graph components: 
-facets, scales, statistics
+Advanced graph components: facets, scales, statistics
 
 A graph is built by combining these components. Components are consistent across graph types!
 
@@ -58,7 +53,7 @@ weather_df
 
 ```
 
-Making first plot, note that unless you assign geometry you won't get data on the plot. 
+Making first plot, note that unless you assign geometry you won't get data on the plot.
 
 ```{r}
 ggp_weather_scatterplot = 
@@ -68,7 +63,8 @@ ggp_weather_scatterplot =
 ggp_weather_scatterplot
 
 ```
-Alpha can change shading of points. Color by name adds a key. Geom smooth fits a smooth line and defaults with standard error which you can remove with SE = FALSE. 
+
+Alpha can change shading of points. Color by name adds a key. Geom smooth fits a smooth line and defaults with standard error which you can remove with SE = FALSE.
 
 ```{r}
 weather_df |> 
@@ -76,12 +72,45 @@ weather_df |>
   geom_point(alpha = .3, size = .8) + 
   geom_smooth(se = FALSE)
 ```
-Where you define aesthetics matters: 
+
+Where you define aesthetics matters:
 
 ```{r}
 weather_df |> 
   ggplot(aes(x=tmin, y=tmax)) +
   geom_point(aes(color = name), alpha = .3, size = .8) + 
   geom_smooth(se = FALSE)
+```
+
+use faceting real quick:
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax, color = name)) + 
+  geom_point(alpha=0.3) + 
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name) #this is written such that columns are first, you can also do it the other way arounf (name ~ .)
+
+```
+
+Let's make a somewhat more interesting scatterplot:
+
+```{r}
+weather_df |> 
+  ggplot(aes(x= date, y= tmax, color = name, size = prcp)) + 
+  geom_point(alpha = 0.3) + 
+  geom_smooth(se = FALSE) + 
+  facet_grid(.~name)
+```
+
+```{r}
+weather_df |> 
+  filter(name == "CentralPark_NY") |> 
+  mutate(
+    tmax_fahr = tmax * (9 / 5) + 32,
+    tmin_fahr = tmin * (9 / 5) + 32) |> 
+  ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "green")
 ```
 

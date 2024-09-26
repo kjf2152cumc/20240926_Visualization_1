@@ -105,6 +105,7 @@ ggp_weather_scatterplot
     ## (`geom_point()`).
 
 ![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
 Alpha can change shading of points. Color by name adds a key. Geom
 smooth fits a smooth line and defaults with standard error which you can
 remove with SE = FALSE.
@@ -125,6 +126,7 @@ weather_df |>
     ## (`geom_point()`).
 
 ![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
 Where you define aesthetics matters:
 
 ``` r
@@ -143,3 +145,80 @@ weather_df |>
     ## (`geom_point()`).
 
 ![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+use faceting real quick:
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax, color = name)) + 
+  geom_point(alpha=0.3) + 
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name) #this is written such that columns are first, you can also do it the other way arounf (name ~ .)
+```
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+Let’s make a somewhat more interesting scatterplot:
+
+``` r
+weather_df |> 
+  ggplot(aes(x= date, y= tmax, color = name, size = prcp)) + 
+  geom_point(alpha = 0.3) + 
+  geom_smooth(se = FALSE) + 
+  facet_grid(.~name)
+```
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## `geom_smooth()` using method = 'loess' and formula = 'y ~ x'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+    ## The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+    ## The following aesthetics were dropped during statistical transformation: size.
+    ## ℹ This can happen when ggplot fails to infer the correct grouping structure in
+    ##   the data.
+    ## ℹ Did you forget to specify a `group` aesthetic or to convert a numerical
+    ##   variable into a factor?
+
+    ## Warning: Removed 19 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+weather_df |> 
+  filter(name == "CentralPark_NY") |> 
+  mutate(
+    tmax_fahr = tmax * (9 / 5) + 32,
+    tmin_fahr = tmin * (9 / 5) + 32) |> 
+  ggplot(aes(x = tmin_fahr, y = tmax_fahr)) +
+  geom_point(alpha = .5) + 
+  geom_smooth(method = "lm", se = FALSE, color = "green")
+```
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
