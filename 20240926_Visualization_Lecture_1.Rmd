@@ -28,6 +28,60 @@ facets, scales, statistics
 
 A graph is built by combining these components. Components are consistent across graph types!
 
+# Coding
 
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggridges)
+```
 
+```{r, warning=FALSE}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = case_match(
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything())
+```
+
+```{r}
+weather_df
+
+```
+
+Making first plot, note that unless you assign geometry you won't get data on the plot. 
+
+```{r}
+ggp_weather_scatterplot = 
+  ggplot(weather_df, aes(x = tmin, y = tmax)) +
+  geom_point()
+
+ggp_weather_scatterplot
+
+```
+Alpha can change shading of points. Color by name adds a key. Geom smooth fits a smooth line and defaults with standard error which you can remove with SE = FALSE. 
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax, color = name)) +
+  geom_point(alpha = .3, size = .8) + 
+  geom_smooth(se = FALSE)
+```
+Where you define aesthetics matters: 
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax)) +
+  geom_point(aes(color = name), alpha = .3, size = .8) + 
+  geom_smooth(se = FALSE)
+```
 
