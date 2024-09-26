@@ -222,3 +222,49 @@ weather_df |>
     ## `geom_smooth()` using formula = 'y ~ x'
 
 ![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+\## Small things
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax))+
+  geom_point(aes(color = name), alpha = .3, size= .8) + 
+  geom_smooth(se = FALSE)
+```
+
+    ## `geom_smooth()` using method = 'gam' and formula = 'y ~ s(x, bs = "cs")'
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_smooth()`).
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+``` r
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax))+
+  geom_hex()
+```
+
+    ## Warning: Removed 17 rows containing non-finite outside the scale range
+    ## (`stat_binhex()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+``` r
+weather_df |> 
+  ggplot(aes(x= tmin, y=tmax)) +
+  geom_point(color = "royalblue")
+```
+
+    ## Warning: Removed 17 rows containing missing values or values outside the scale range
+    ## (`geom_point()`).
+
+![](20240926_Visualization_Lecture_1_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+
+Colors bring up a great question. When to quote and when not to quote?
+
+Generally speaking, if something is a variable name, it doesn’t need to
+be in quotes. If it is NOT a variable name it often needs quotes. Unless
+of course it is a function.

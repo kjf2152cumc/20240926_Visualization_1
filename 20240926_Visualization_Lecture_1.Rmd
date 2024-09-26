@@ -113,4 +113,34 @@ weather_df |>
   geom_point(alpha = .5) + 
   geom_smooth(method = "lm", se = FALSE, color = "green")
 ```
+## Small things
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax))+
+  geom_point(aes(color = name), alpha = .3, size= .8) + 
+  geom_smooth(se = FALSE)
+
+```
+
+```{r}
+weather_df |> 
+  ggplot(aes(x=tmin, y=tmax))+
+  geom_hex()
+```
+```{r}
+weather_df |> 
+  ggplot(aes(x= tmin, y=tmax)) +
+  geom_point(color = "royalblue")
+```
+
+Colors bring up a great question. When to quote and when not to quote? 
+
+Generally speaking, if something is a variable name, it doesn't need to be in quotes. If it is NOT a variable name it often needs quotes. Unless of course it is a function. 
+
+
+
+
+
+
 
